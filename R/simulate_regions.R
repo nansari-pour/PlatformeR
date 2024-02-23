@@ -1,6 +1,6 @@
 # Simulate normal region
 
-simulate_normal_region <- function(chrom,region,diploid_regions,clone_fasta_filename,art_bin,haploid_cov,read_length,fragment_size,fragment_size_sd,tmp_dir,fq1,fq2,bwa,refseq,bam,ncores,samtools,logfile,skip_art=FALSE,skip_bwa=FALSE){
+simulate_normal_region <- function(chrom,region,diploid_regions,art_bin,haploid_cov,read_length,fragment_size,fragment_size_sd,tmp_dir,bwa,refseq,bam,ncores,samtools,logfile,skip_art=FALSE,skip_bwa=FALSE){
 region_maternal_fasta_filename=paste0("chr",chrom,".maternal_",region,".fa")
 region_maternal_fasta=substr(chrom_fasta_alt,diploid_regions$startpos[region],diploid_regions$endpos[region])
 writeLines(paste0(">chr",chrom,"-maternal","-",region),region_maternal_fasta_filename)
@@ -18,40 +18,40 @@ region_clone_fasta_filename=paste0("chr",chrom,".normal.clone_region",region,".f
 system(paste("cat",region_maternal_fasta_filename,region_paternal_fasta_filename,">",region_clone_fasta_filename), wait = TRUE)
 system(paste("rm",region_maternal_fasta_filename,region_paternal_fasta_filename))
 
-fasta2bam_simulate(clone_fasta_filename = clone_fasta_filename,
+fasta2bam_simulate(clone_fasta_filename = region_clone_fasta_filename,
                    art_bin = art_bin,
                    haploid_cov = haploid_cov,
                    read_length = read_length,
                    fragment_size = fragment_size,
                    fragment_size_sd = fragment_size_sd,
                    tmp_dir = tmp_dir,
-                   fq1 = fq1,
-                   fq2 = fq2,
+                   fq1 = paste0(gsub(".fa","_",region_clone_fasta_filename),"1.fq"),
+                   fq2 = paste0(gsub(".fa","_",region_clone_fasta_filename),"2.fq"),
                    bwa = bwa,
                    refseq = refseq,
                    bam = bam,
                    ncores = ncores,
                    samtools = samtools,
-                   logfile = logfile)
+                   logfile = logfile,
+                   skip_art = skip_art,
+                   skip_bwa = skip_bwa)
 }
 
 # Simulate LOH region
 
-simulate_loh_region <- function(chrom,loh_haplotype,loh_region,clone_fasta_filename,art_bin,haploid_cov,read_length,fragment_size,fragment_size_sd,tmp_dir,fq1,fq2,bwa,refseq,bam,ncores,samtools,logfile,skip_art=FALSE,skip_bwa=FALSE){
-  
-  loh_ccf=LOH_simulate$CCF[loh_region]
+simulate_loh_region <- function(chrom,loh_haplotype,loh_region,loh_simulate,art_bin,haploid_cov,read_length,fragment_size,fragment_size_sd,tmp_dir,bwa,refseq,bam,ncores,samtools,logfile,skip_art=FALSE,skip_bwa=FALSE){
   
   if (loh_haplotype=="maternal"){
     # LOH_region_maternal_fasta is NULL - because of LOH, so only generate LOH_region paternal fasta
     LOH_region_clone_fasta_filename=paste0("chr",chrom,".LOH_",loh_region,".fa")
-    LOH_region_clone_fasta=substr(chrom_fasta_ref,LOH_simulate$startpos[loh_region],LOH_simulate$endpos[loh_region])
+    LOH_region_clone_fasta=substr(chrom_fasta_ref,loh_simulate$startpos[loh_region],loh_simulate$endpos[loh_region])
     writeLines(paste0(">chr",chrom,"-paternal","-LOH-",loh_region),LOH_region_clone_fasta_filename)
     cat(LOH_region_clone_fasta, sep = "\n", file = LOH_region_clone_fasta_filename, append = TRUE)
     print(paste0(">chr",chrom,"-paternal","-LOH-",loh_region," length = ",nchar(LOH_region_clone_fasta)))
   } else if (loh_haplotype=="paternal"){
     # LOH_region_paternal_fasta is NULL - because of LOH, so only generate LOH_region maternal fasta 
     LOH_region_clone_fasta_filename=paste0("chr",chrom,".LOH_",loh_region,".fa")
-    LOH_region_clone_fasta=substr(chrom_fasta_alt,LOH_simulate$startpos[loh_region],LOH_simulate$endpos[loh_region])
+    LOH_region_clone_fasta=substr(chrom_fasta_alt,loh_simulate$startpos[loh_region],loh_simulate$endpos[loh_region])
     writeLines(paste0(">chr",chrom,"-maternal","-LOH-",loh_region),LOH_region_clone_fasta_filename)
     cat(LOH_region_clone_fasta, sep = "\n", file = LOH_region_clone_fasta_filename, append = TRUE)
     print(paste0(">chr",chrom,"-maternal","-LOH-",loh_region," length = ",nchar(LOH_region_clone_fasta)))
@@ -59,40 +59,40 @@ simulate_loh_region <- function(chrom,loh_haplotype,loh_region,clone_fasta_filen
     stop("Wrong LOH haplotype designation")
   }
   
-  fasta2bam_simulate(clone_fasta_filename = clone_fasta_filename,
+  fasta2bam_simulate(clone_fasta_filename = LOH_region_clone_fasta_filename,
                      art_bin = art_bin,
                      haploid_cov = haploid_cov,
                      read_length = read_length,
                      fragment_size = fragment_size,
                      fragment_size_sd = fragment_size_sd,
                      tmp_dir = tmp_dir,
-                     fq1 = fq1,
-                     fq2 = fq2,
+                     fq1 = paste0(gsub(".fa","_",LOH_region_clone_fasta_filename),"1.fq"),
+                     fq2 = paste0(gsub(".fa","_",LOH_region_clone_fasta_filename),"2.fq"),
                      bwa = bwa,
                      refseq = refseq,
                      bam = bam,
                      ncores = ncores,
                      samtools = samtools,
-                     logfile = logfile)
+                     logfile = logfile,
+                     skip_art = skip_art,
+                     skip_bwa = skip_bwa)
   
 }
 
 # Simulate GAIN region
 
-simulate_gain_region <- function(chrom,gain_haplotype,gain_region,clone_fasta_filename,art_bin,haploid_cov,read_length,fragment_size,fragment_size_sd,tmp_dir,fq1,fq2,bwa,refseq,bam,ncores,samtools,logfile,skip_art=FALSE,skip_bwa=FALSE){
-  
-  gain_ccf=GAIN_simulate$CCF[gain_region]
+simulate_gain_region <- function(chrom,gain_haplotype,gain_region,gain_simulate,art_bin,haploid_cov,read_length,fragment_size,fragment_size_sd,tmp_dir,bwa,refseq,bam,ncores,samtools,logfile,skip_art=FALSE,skip_bwa=FALSE){
   
   GAIN_region_clone_fasta_filename=paste0("chr",chrom,".GAIN_",gain_region,".fa")
   
   GAIN_region_maternal_fasta_filename=paste0("chr",chrom,".maternal_GAIN_",gain_region,".fa")
-  GAIN_region_maternal_fasta=substr(chrom_fasta_alt,GAIN_simulate$startpos[gain_region],GAIN_simulate$endpos[gain_region])
+  GAIN_region_maternal_fasta=substr(chrom_fasta_alt,gain_simulate$startpos[gain_region],gain_simulate$endpos[gain_region])
   writeLines(paste0(">chr",chrom,"-maternal","-GAIN-",gain_region),GAIN_region_maternal_fasta_filename)
   cat(GAIN_region_maternal_fasta, sep = "\n", file = GAIN_region_maternal_fasta_filename, append = TRUE)
   print(paste0(">chr",chrom,"-maternal","-GAIN-",gain_region," length = ",nchar(GAIN_region_maternal_fasta)))
   
   GAIN_region_paternal_fasta_filename=paste0("chr",chrom,".paternal_GAIN_",gain_region,".fa")
-  GAIN_region_paternal_fasta=substr(chrom_fasta_ref,GAIN_simulate$startpos[gain_region],GAIN_simulate$endpos[gain_region])
+  GAIN_region_paternal_fasta=substr(chrom_fasta_ref,gain_simulate$startpos[gain_region],gain_simulate$endpos[gain_region])
   writeLines(paste0(">chr",chrom,"-paternal","-GAIN-",gain_region),GAIN_region_paternal_fasta_filename)
   cat(GAIN_region_paternal_fasta, sep = "\n", file = GAIN_region_paternal_fasta_filename, append = TRUE)
   print(paste0(">chr",chrom,"-paternal","-GAIN-",gain_region," length = ",nchar(GAIN_region_paternal_fasta)))
@@ -112,19 +112,21 @@ simulate_gain_region <- function(chrom,gain_haplotype,gain_region,clone_fasta_fi
   } else {stop("Wrong GAIN haplotype designation")}
   system(paste("rm",GAIN_region_paternal_fasta_filename,GAIN_region_maternal_fasta_filename),wait=TRUE)
   
-  fasta2bam_simulate(clone_fasta_filename = clone_fasta_filename,
+  fasta2bam_simulate(clone_fasta_filename = GAIN_region_clone_fasta_filename,
                      art_bin = art_bin,
                      haploid_cov = haploid_cov,
                      read_length = read_length,
                      fragment_size = fragment_size,
                      fragment_size_sd = fragment_size_sd,
                      tmp_dir = tmp_dir,
-                     fq1 = fq1,
-                     fq2 = fq2,
+                     fq1 = paste0(gsub(".fa","_",GAIN_region_clone_fasta_filename),"1.fq"),
+                     fq2 = paste0(gsub(".fa","_",GAIN_region_clone_fasta_filename),"2.fq"),
                      bwa = bwa,
                      refseq = refseq,
                      bam = bam,
                      ncores = ncores,
                      samtools = samtools,
-                     logfile = logfile)
+                     logfile = logfile,
+                     skip_art = skip_art,
+                     skip_bwa = skip_bwa)
 }
