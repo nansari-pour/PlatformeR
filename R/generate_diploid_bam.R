@@ -1,6 +1,6 @@
 # Create Normal diploid BAM for a chromosome (mainly for copy number paired-analysis)
 
-generate_normal_bam <- function(chrom,fasta_dir,phase_dir,art_bin,haploid_coverage,read_length,fragment_size,fragment_size_sd,tmp_dir,fq1,fq2,bwa,refseq,bam,ncores,samtools,logfile,skip_art=FALSE,skip_bwa=FALSE){
+generate_diploid_bam <- function(chrom,fasta_dir,phase_dir,art_bin,haploid_coverage,read_length,fragment_size,fragment_size_sd,tmp_dir,bwa,refseq,bam,ncores,samtools,logfile,skip_art=FALSE,skip_bwa=FALSE){
   
   print(paste0("Initiating simulation of chromosome",chrom," - diploid"))
   
@@ -20,14 +20,14 @@ generate_normal_bam <- function(chrom,fasta_dir,phase_dir,art_bin,haploid_covera
                      fragment_size = fragment_size,
                      fragment_size_sd = fragment_size_sd,
                      tmp_dir = tmp_dir,
-                     fq1 = fq1,
-                     fq2 = fq2,
+                     fq1 = paste0(gsub(".fa","_",normal_fasta_filename),"1.fq"),
+                     fq2 = paste0(gsub(".fa","_",normal_fasta_filename),"2.fq"),
                      bwa = bwa,
                      refseq = refseq,
                      bam = bam,
                      ncores = ncores,
                      samtools = samtools,
                      logfile = logfile,
-                     skip_art = FALSE,
-                     skip_bwa = FALSE)
+                     skip_art = skip_art,
+                     skip_bwa = skip_bwa)
 }
