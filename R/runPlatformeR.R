@@ -17,6 +17,7 @@ runPlatformeR <- function(cna_simulate,chrom,fasta_dir,phase_dir,art_bin,haploid
   diploid_regions=alternate_segments(chr_length,chrom_simulate[,c("startpos","endpos")])
   print(diploid_regions)
   
+  if (!is.null(diploid_regions)){
   if (nrow(diploid_regions)>0){
     
     for (region in 1:nrow(diploid_regions)){
@@ -38,7 +39,7 @@ runPlatformeR <- function(cna_simulate,chrom,fasta_dir,phase_dir,art_bin,haploid
                              logfile = paste0("BWA_normal_clone_region",region,".log"))
     }
   } else {print("no diploid regions to be simulated")}
-  
+  } else {print("CNA across entire chromosome")}
   
   # STEP 3 - identify and generate BAMs for LOH regions if present in chrom_simulate
   
