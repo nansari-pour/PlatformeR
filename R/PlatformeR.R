@@ -1,4 +1,4 @@
-# PlatformeR genome-wide wrapper function
+# PlatformeR main function
 
 PlatformeR <- function(cna_simulate_file,chrom,out_dir,fasta_dir,phase_dir,art_bin,bwa,samtools,tmp_dir,ncores,coverage,normal_coverage,simulated_purity,loh_haplotype,gain_haplotype,generate_diploid_normal=TRUE){
   # Read in CNA simulation input for chromosomes 
@@ -16,9 +16,9 @@ PlatformeR <- function(cna_simulate_file,chrom,out_dir,fasta_dir,phase_dir,art_b
     setwd(chrom_dir)
     print(getwd())
     
-    # runPlatformeR per chromosome 
+    # run CNA simulation per chromosome 
     
-    runPlatformeR(cna_simulate = cna_simulate,
+    run_chrom_cna(cna_simulate = cna_simulate,
                   chrom = chrom,
                   fasta_dir = fasta_dir,
                   phase_dir = phase_dir,
