@@ -1,6 +1,6 @@
-# run PlatformeR per chromosome
+# run CNA simulation per chromosome
 
-runPlatformeR <- function(cna_simulate,chrom,fasta_dir,phase_dir,art_bin,haploid_coverage,read_length,fragment_size,fragment_size_sd,tmp_dir,bwa,ncores,samtools,loh_haplotype,gain_haplotype,generate_normal=TRUE,haploid_coverage_normal){
+run_chrom_cna <- function(cna_simulate,chrom,fasta_dir,phase_dir,art_bin,haploid_coverage,read_length,fragment_size,fragment_size_sd,tmp_dir,bwa,ncores,samtools,loh_haplotype,gain_haplotype,generate_normal=TRUE,haploid_coverage_normal){
   
   chrom_simulate=cna_simulate[cna_simulate$chr==chrom,]
   chrom_simulate$length=chrom_simulate$endpos-chrom_simulate$startpos
