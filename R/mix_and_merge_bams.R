@@ -38,13 +38,13 @@ mix_bams_gain <- function(simulated_purity,cna_ccf,downsampling_seed,samtools,cl
 
 # Function for merging BAM segments/regions to form a full chromosome
 
-merge_mini_bams <- function(samtools,mini_bams_list_file,clone_bam_filename){
+merge_mini_bams <- function(samtools,mini_bams_list_file,ncores,clone_bam_filename){
   print(clone_bam_filename)
   first_mini_bam_filename=readLines(mini_bams_list_file)[1]
-  system(paste(samtools,"merge -h",first_mini_bam_filename,"-c -p -f",clone_bam_filename,"-b",mini_bams_list_file))
-  system(paste(samtools,"sort",clone_bam_filename,"-o",paste0(gsub(".bam","",clone_bam_filename),"_sorted.bam")))
+  system(paste(samtools,"merge -@",ncores,"-h",first_mini_bam_filename,"-c -p -f",clone_bam_filename,"-b",mini_bams_list_file))
+  system(paste(samtools,"sort -@",ncores,clone_bam_filename,"-o",paste0(gsub(".bam","",clone_bam_filename),"_sorted.bam")))
   system(paste("mv",paste0(gsub(".bam","",clone_bam_filename),"_sorted.bam"),clone_bam_filename))
-  system(paste(samtools,"index",clone_bam_filename))
+  system(paste(samtools,"index -@",ncores,clone_bam_filename))
 }
 
 # Deprecated - Function for mixing BAMs for subclonal LOH events
