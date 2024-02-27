@@ -215,6 +215,7 @@ runPlatformeR <- function(cna_simulate,chrom,fasta_dir,phase_dir,art_bin,haploid
   
   merge_mini_bams(samtools = samtools,
                   mini_bams_list_file = paste0("chr",chrom,"_mini_bams_list.txt"),
+                  ncores = ncores,
                   clone_bam_filename = ifelse(simulated_purity==1,paste0("chr",chrom,".clone.bam"),paste0("chr",chrom,".clone_purity_",simulated_purity,".bam")))
   
   
