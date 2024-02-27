@@ -12,8 +12,8 @@ PlatformeR <- function(cna_simulate_file,chrom,out_dir,fasta_dir,phase_dir,art_b
   if (chrom %in% cna_chroms){
     print(paste("Chromosomes to be simulated with CNAs =",chrom))
     chrom_dir=paste0(out_dir,"chr",chrom,"/")
-    dir.create(out_dir,recursive = TRUE,showWarnings = FALSE)
-    setwd(out_dir)
+    dir.create(chrom_dir,recursive = TRUE,showWarnings = FALSE)
+    setwd(chrom_dir)
     print(getwd())
     
     # runPlatformeR per chromosome 
@@ -38,10 +38,10 @@ PlatformeR <- function(cna_simulate_file,chrom,out_dir,fasta_dir,phase_dir,art_b
     
   } else {
     
-    print(paste("Starting Chromosome",chrom,"- normal only"))
+    print(paste("Starting Chromosome ",chrom,"- normal only"))
     chrom_dir=paste0(out_dir,"chr",chrom,"/")
-    dir.create(out_dir,recursive = TRUE,showWarnings = FALSE)
-    setwd(out_dir)
+    dir.create(chrom_dir,recursive = TRUE,showWarnings = FALSE)
+    setwd(chrom_dir)
     print(getwd())
     
     generate_diploid_bam(chrom = chrom,
@@ -55,7 +55,7 @@ PlatformeR <- function(cna_simulate_file,chrom,out_dir,fasta_dir,phase_dir,art_b
                          tmp_dir = tmp_dir,
                          bwa = BWA,
                          refseq = paste0(fasta_dir,"chr",chrom,".fa"),
-                         bam = paste0("chr",chrom,".clone.bam"),
+                         bam = ifelse(simulated_purity==1,paste0("chr",chrom,".clone.bam"),paste0("chr",chrom,".clone_purity_",simulated_purity,".bam")),
                          ncores = ncores,
                          samtools = SAM,
                          logfile = "BWA_clone.log")
