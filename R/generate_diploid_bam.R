@@ -1,4 +1,26 @@
-# Create Normal diploid BAM for a chromosome (mainly for copy number paired-analysis)
+#' Create Normal diploid BAM for a chromosome
+#'
+#' The function creates a diploid BAM for a given chromosome mainly for copy number paired-analysis 
+#' as germline or to generate a non-CNA chromosome for the tumour 
+#' @param chrom Name of the chromosome to be simulated 
+#' @param fasta_dir Full path to the chromosome fasta directory
+#' @param phase_dir Full path to the phase reference file directory
+#' @param art_bin Full path to the ART bin tool for Illumina read simulation
+#' @param haploid_coverage Sequencing coverage depth to be simulated per chromosome copy (numeric)
+#' @param read_length Length of the Illumina reads to be simulated (integer, usually 150)
+#' @param fragment_size Mean size of the sequencing library fragments to be simulated (integer)
+#' @param fragment_size_sd Standard deviation of the size of the sequencing library fragments to be simulated (integer)
+#' @param tmp_dir Name of the temporary directory for samtools run (character string, e.g. "TMP")
+#' @param bwa Full path to the BWA tool for read alignment
+#' @param refseq Full path to the fasta reference file to be used by BWA 
+#' @param bam Name of the BAM file to be generated (string)
+#' @param ncores Number of cores to be used in running BWA and samtools
+#' @param samtools Full path to the samtools bin
+#' @param logfile Name of the logfile for the BWA run (string)
+#' @param skip_art set to TRUE if ART run is already complete - files are expected in the working directory (default = FALSE)
+#' @param skip_bwa set to TRUE if BWA run is already complete - files are expected in the working directory (default = FALSE)
+#' @author naser.ansari-pour
+#' @export
 
 generate_diploid_bam <- function(chrom,fasta_dir,phase_dir,art_bin,haploid_coverage,read_length,fragment_size,fragment_size_sd,tmp_dir,bwa,refseq,bam,ncores,samtools,logfile,skip_art=FALSE,skip_bwa=FALSE){
   
