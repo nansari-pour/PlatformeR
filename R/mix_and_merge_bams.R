@@ -1,4 +1,14 @@
-# Function for mixing BAMs for subclonal LOH events
+#' Function for mixing BAMs for subclonal LOH events
+#' 
+#' @param simulated_purity Full path to the chromosome fasta directory
+#' @param cna_ccf The tumour purity to be simulated (numeric, ranging (0,1])
+#' @param downsampling_seed The seed value to be used for downsampling with samtools
+#' @param samtools Full path to the samtools bin
+#' @param clone0 Name of the clone with the simulated LOH
+#' @param clone1 Name of the clone with normal diploid copy number
+#' @param clone01 Name of the mixed clone to be used for the output BAM
+#' @author naser.ansari-pour
+#' @export
 
 mix_bams_loh <- function(simulated_purity,cna_ccf,downsampling_seed,samtools,clone0,clone1,clone01){
   print(paste("LOH CCF =",cna_ccf))
@@ -17,7 +27,17 @@ mix_bams_loh <- function(simulated_purity,cna_ccf,downsampling_seed,samtools,clo
   system(paste(samtools,"index",paste0(clone01,".bam")))
 }
 
-# Function for mixing BAMs for subclonal GAIN events
+#' Function for mixing BAMs for subclonal GAIN events
+#' 
+#' @param simulated_purity Full path to the chromosome fasta directory
+#' @param cna_ccf The tumour purity to be simulated (numeric, ranging (0,1])
+#' @param downsampling_seed The seed value to be used for downsampling with samtools
+#' @param samtools Full path to the samtools bin
+#' @param clone0 Name of the clone with the simulated GAIN
+#' @param clone1 Name of the clone with normal diploid copy number
+#' @param clone01 Name of the mixed clone to be used for the output BAM
+#' @author naser.ansari-pour
+#' @export
 
 mix_bams_gain <- function(simulated_purity,cna_ccf,downsampling_seed,samtools,clone0,clone1,clone01){
   print(paste("GAIN CCF =",cna_ccf))
@@ -36,7 +56,17 @@ mix_bams_gain <- function(simulated_purity,cna_ccf,downsampling_seed,samtools,cl
   system(paste(samtools,"index",paste0(clone01,".bam")))
 }
 
-# Function for merging BAM segments/regions to form a full chromosome
+#' Function for merging BAM segments/regions to form a full chromosome
+#' 
+#' This functions merges the pieces/segments of the chromosome based on the bam list file
+#' that need to be stitched back together some of which will contain CNA and 
+#' some are diploid regions (if any) in between
+#' @param samtools Full path to the samtools bin
+#' @param mini_bams_list_file Full path to a one-column file listing the bam names to be merged (including the .bam file extension)
+#' @param ncores Number of cores to be used in running BWA and samtools
+#' @param clone_bam_filename The file name (including the .bam file extension) to be used for the final merged bam output
+#' @author naser.ansari-pour
+#' @export
 
 merge_mini_bams <- function(samtools,mini_bams_list_file,ncores,clone_bam_filename){
   print(clone_bam_filename)
@@ -47,7 +77,21 @@ merge_mini_bams <- function(samtools,mini_bams_list_file,ncores,clone_bam_filena
   system(paste(samtools,"index -@",ncores,clone_bam_filename))
 }
 
-# Deprecated - Function for mixing BAMs for subclonal LOH events
+#' Deprecated - Function for mixing BAMs for subclonal LOH events
+#' 
+#' @param simulated_purity Full path to the chromosome fasta directory
+#' @param cna_ccf The tumour purity to be simulated (numeric, ranging (0,1])
+#' @param chrom_length Chromosome sequence length (integer value)
+#' @param cna_length CNA sequence length (integer value)
+#' @param downsampling_seed The seed value to be used for downsampling with samtools
+#' @param samtools Full path to the samtools bin
+#' @param clone0 Name of the clone with the simulated GAIN
+#' @param clone1 Name of the clone with normal diploid copy number
+#' @param clone01 Name of the mixed clone to be used for the output BAM
+#' @author naser.ansari-pour
+#' @keywords internal
+
+
 mix_bams_loh_legacy <- function(simulated_purity,cna_ccf,chrom_length,cna_length,downsampling_seed,samtools,clone0,clone1,clone01){
   # Calculate loh_prop with precision
   loh_prop=loh_mix_prop(cna_ccf = cna_ccf,
@@ -70,7 +114,19 @@ mix_bams_loh_legacy <- function(simulated_purity,cna_ccf,chrom_length,cna_length
   system(paste(samtools,"index",paste0(clone01,".bam")))
 }
 
-# Deprecated - Function for mixing BAMs for subclonal GAIN events ####
+#' Deprecated - Function for mixing BAMs for subclonal GAIN events
+#' 
+#' @param cna_ccf The tumour purity to be simulated (numeric, ranging (0,1])
+#' @param chrom_length Chromosome sequence length (integer value)
+#' @param cna_length CNA sequence length (integer value)
+#' @param downsampling_seed The seed value to be used for downsampling with samtools
+#' @param samtools Full path to the samtools bin
+#' @param clone0 Name of the clone with the simulated GAIN
+#' @param clone1 Name of the clone with normal diploid copy number
+#' @param clone01 Name of the mixed clone to be used for the output BAM
+#' @author naser.ansari-pour
+#' @keywords internal
+
 mix_bams_gain_legacy <- function(cna_ccf,chrom_length,cna_length,downsampling_seed,samtools,clone0,clone1,clone01){
   # Calculate loh_prop with precision
   gain_prop=gain_mix_prop(cna_ccf = cna_ccf,
@@ -93,13 +149,29 @@ mix_bams_gain_legacy <- function(cna_ccf,chrom_length,cna_length,downsampling_se
   system(paste(samtools,"index",paste0(clone01,".bam")))
 }
 
-# Deprecated - Function for calculating clone proportion for normal contamination in non-pure simulated tumour
+#' Deprecated - Function for calculating clone proportion for normal contamination in non-pure simulated tumour
+#' 
+#' @param simulated_purity Full path to the chromosome fasta directory
+#' @param clone_length_ratio Ratio of the genome length of the clone with CNA to normal diploid genome
+#' @author naser.ansari-pour
+#' @keywords internal
+
 clone_proportion <- function(simulated_purity,clone_length_ratio){
   clone_prop = (simulated_purity*clone_length_ratio)/(simulated_purity*clone_length_ratio + (1-simulated_purity))
   return(round(clone_prop,digits = 3))
 }
 
-# Deprecated - Function for adding normal contamination to a clone
+#' Deprecated - Function for adding normal contamination to a GAIN clone
+#' 
+#' @param simulated_purity Full path to the chromosome fasta directory
+#' @param downsampling_seed The seed value to be used for downsampling with samtools
+#' @param samtools Full path to the samtools bin
+#' @param clone Name of the clone with the simulated GAIN
+#' @param normal Name of the clone with normal diploid copy number
+#' @param clone_normal Name of the mixed clone to be used for the output BAM
+#' @author naser.ansari-pour
+#' @keywords internal
+
 contaminate_gain_clone_bam <- function(simulated_purity,downsampling_seed,samtools,clone,normal,clone_normal){
   # Calculate clone proportion with precision
   #if (cna_ccf==1){
@@ -125,7 +197,19 @@ contaminate_gain_clone_bam <- function(simulated_purity,downsampling_seed,samtoo
   system(paste(samtools,"index",paste0(clone_normal,".bam")))
 }
 
-# Deprecated - Function for adding normal contamination to a clone
+#' Deprecated - Function for adding normal contamination to an LOH clone
+#' 
+#' @param simulated_purity Full path to the chromosome fasta directory
+#' @param cna_ccf The cancer cell fraction of the copy number to be simulated
+#' @param clone_length_ratio Ratio of the genome length of the clone with CNA to normal diploid genome
+#' @param downsampling_seed The seed value to be used for downsampling with samtools
+#' @param samtools Full path to the samtools bin
+#' @param clone Name of the clone with the simulated GAIN
+#' @param normal Name of the clone with normal diploid copy number
+#' @param clone_normal Name of the mixed clone to be used for the output BAM
+#' @author naser.ansari-pour
+#' @keywords internal
+
 contaminate_loh_clone_bam <- function(simulated_purity,cna_ccf,clone_length_ratio,downsampling_seed,samtools,clone,normal,clone_normal){
   # Calculate clone proportion with precision
   if (cna_ccf==1){
