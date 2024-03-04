@@ -1,7 +1,11 @@
-# Non-piecewise functions for removing and adding segments to the chromosome fasta sequence 
+#' Function for removing a segment from the chromosome fasta sequence 
+#'
+#' Non-piecewise (legacy) function to remove segments due to LOH from a chromosome based on start and end positions (using alternate_segments)
+#' @param chromosome_string Chromosome fasta sequence string (one contiguous string)
+#' @param loh_segments A two column dataframe with headers startpos and endpos providing regions to be simulated for LOH
+#' @author naser.ansari-pour
+#' @keywords internal
 
-
-# Function to remove segments due to LOH from a chromosome based on start and end positions (using alternate_segments)
 
 remove_segments <- function(chromosome_string, loh_segments) {
   
@@ -16,7 +20,7 @@ remove_segments <- function(chromosome_string, loh_segments) {
   
   # Identify segments to keep and generate retained string
   segments_to_keep=alternate_segments(chromosome_length = chromosome_length,
-                                     segments_to_remove = loh_segments)
+                                      segments_to_remove = loh_segments)
   
   if (!is.null(segments_to_keep)){
     post_loh_string=NULL
@@ -27,7 +31,13 @@ remove_segments <- function(chromosome_string, loh_segments) {
   return(post_loh_string)
 }
 
-# Function to add segments due to GAIN in a chromosome based on start and end positions
+#' Function for adding a segment from the chromosome fasta sequence 
+#'
+#' Non-piecewise (legacy) function to add segment due to GAIN at the end of a chromosome fasta sequence based on start and end positions (using alternate_segments)
+#' @param chromosome_string Chromosome fasta sequence string (one contiguous string)
+#' @param gain_segments A two column dataframe with headers startpos and endpos providing regions to be simulated for GAIN
+#' @author naser.ansari-pour
+#' @keywords internal
 
 add_segments <- function(chromosome_string, gain_segments) {
   
