@@ -1,6 +1,29 @@
-# run CNA simulation per chromosome
+#' run BAM generation per chromosome with simulated CNA
+#'
+#' The function creates a BAM for a given chromosome with >=1 CNA simulated in it 
+#' and creates a diploid germline normal for the same chromosome if required (i.e.paired analysis)
+#' @param cna_simulate A dataframe with five columns (chr, startpos, endpos, cna, CCF) containing the desired CNA to be simulated
+#' @param chrom Name of the chromosome to be simulated 
+#' @param fasta_dir Full path to the chromosome fasta directory
+#' @param phase_dir Full path to the phase reference file directory
+#' @param art_bin Full path to the ART bin tool for Illumina read simulation
+#' @param haploid_coverage Sequencing coverage depth to be simulated per chromosome copy (numeric)
+#' @param read_length Length of the Illumina reads to be simulated (integer, usually 150)
+#' @param fragment_size Mean size of the sequencing library fragments to be simulated (integer)
+#' @param fragment_size_sd Standard deviation of the size of the sequencing library fragments to be simulated (integer)
+#' @param tmp_dir Name of the temporary directory for samtools run (character string, e.g. "TMP")
+#' @param bwa Full path to the BWA tool for read alignment
+#' @param ncores Number of cores to be used in running BWA and samtools
+#' @param samtools Full path to the samtools bin
+#' @param loh_haplotype The haplotype onto which LOH should be simulated (string, either 'maternal' or 'paternal')
+#' @param gain_haplotype The haplotype onto which GAIN should be simulated (string, either 'maternal' or 'paternal')
+#' @param simulated_purity The tumour purity to be simulated (numeric, ranging (0,1])
+#' @param generate_normal set to FALSE if a normal germline diploid BAM for the same chromosome is not required e.g. for tumour-only simulations (default=TRUE)
+#' @param haploid_coverage_normal Sequencing coverage depth to be simulated per chromosome copy for the germline diploid BAM (numeric)
+#' @author naser.ansari-pour
+#' @export
 
-run_chrom_cna <- function(cna_simulate,chrom,fasta_dir,phase_dir,art_bin,haploid_coverage,read_length,fragment_size,fragment_size_sd,tmp_dir,bwa,ncores,samtools,loh_haplotype,gain_haplotype,generate_normal=TRUE,haploid_coverage_normal){
+run_chrom_cna <- function(cna_simulate,chrom,fasta_dir,phase_dir,art_bin,haploid_coverage,read_length,fragment_size,fragment_size_sd,tmp_dir,bwa,ncores,samtools,loh_haplotype,gain_haplotype,simulated_purity,generate_normal=TRUE,haploid_coverage_normal){
   
   chrom_simulate=cna_simulate[cna_simulate$chr==chrom,]
   chrom_simulate$length=chrom_simulate$endpos-chrom_simulate$startpos
