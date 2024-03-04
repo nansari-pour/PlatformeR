@@ -1,4 +1,11 @@
-# Function to generate maternal and paternal chromosome fasta files per chromosome
+#' Function to generate chromosome fasta files
+#' 
+#' This function generates maternal and paternal fasta files per chromosome
+#' @param chrom Name of the chromosome to be simulated (chrom number without 'chr' e.g. 1,2,...,22)
+#' @param fasta_dir Full path to the chromosome fasta directory
+#' @param phase_dir Full path to the phase reference file directory
+#' @author naser.ansari-pour
+#' @export
 
 prepare_chrom_fasta <- function(chrom,fasta_dir,phase_dir){
   
