@@ -1,0 +1,12 @@
+Package: PlatformeR
+Title: WGS Copy number Simulator
+Version: 0.1.0
+Authors@R: 
+    person("Naser", "Ansari-Pour", , "naser.ansari-pour@ndorms.ox.ac.uk", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-0908-0484"))
+Description: In silico tool to generate WGS-based alignment file (BAM)
+    with simulated CNA
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
