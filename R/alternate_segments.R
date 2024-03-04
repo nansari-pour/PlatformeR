@@ -1,4 +1,10 @@
-# Function to identify alternate segments after CNA events - updated version to allow completely adjacent CNA
+#' Function to identify alternate segments after CNA events - updated version to allow completely adjacent CNA
+#'
+#' Function to identify chromosome segments that are not to be simulated with CNA
+#' @param chromosome_length Chromosome sequence length (integer value)
+#' @param segments_to_remove A two column dataframe (chrom_simulate) with headers startpos and endpos providing regions to be simulated with CNA
+#' @author naser.ansari-pour
+#' @export
 
 alternate_segments <- function(chromosome_length,segments_to_remove){
   segments_to_remove=segments_to_remove[order(segments_to_remove$startpos),]
