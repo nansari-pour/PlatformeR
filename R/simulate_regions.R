@@ -1,4 +1,25 @@
-# Simulate normal region
+#' Function to simulate normal region BAM
+#' 
+#' This function simulates a normal bam for a given region of interest on a chromosome
+#' @param chrom Name of the chromosome to be simulated (chrom number without 'chr' e.g. 1,2,...,22)
+#' @param region The region number to be simulated among the diploid_regions (integer)
+#' @param diploid_regions A dataframe with two columns containing startpos and endpos of each diploid region
+#' @param art_bin Full path to the ART bin tool for Illumina read simulation
+#' @param haploid_cov Sequencing coverage depth to be simulated per chromosome copy (numeric)
+#' @param read_length Length of the Illumina reads to be simulated (integer, usually 150)
+#' @param fragment_size Mean size of the sequencing library fragments to be simulated (integer)
+#' @param fragment_size_sd Standard deviation of the size of the sequencing library fragments to be simulated (integer)
+#' @param tmp_dir Name of the temporary directory for samtools run (character string, e.g. "TMP")
+#' @param bwa Full path to the BWA tool for read alignment
+#' @param refseq Full path to the fasta reference file to be used by BWA 
+#' @param bam Name of the BAM file to be generated (string)
+#' @param ncores Number of cores to be used in running BWA and samtools
+#' @param samtools Full path to the samtools bin
+#' @param logfile Name of the logfile for the BWA run (string)
+#' @param skip_art set to TRUE if ART run is already complete - files are expected in the working directory (default = FALSE)
+#' @param skip_bwa set to TRUE if BWA run is already complete - files are expected in the working directory (default = FALSE)
+#' @author naser.ansari-pour
+#' @export
 
 simulate_normal_region <- function(chrom,region,diploid_regions,art_bin,haploid_cov,read_length,fragment_size,fragment_size_sd,tmp_dir,bwa,refseq,bam,ncores,samtools,logfile,skip_art=FALSE,skip_bwa=FALSE){
 region_maternal_fasta_filename=paste0("chr",chrom,".maternal_",region,".fa")
@@ -37,7 +58,29 @@ fasta2bam_simulate(clone_fasta_filename = region_clone_fasta_filename,
                    skip_bwa = skip_bwa)
 }
 
-# Simulate LOH region
+#' Function to simulate LOH region BAM
+#' 
+#' This function simulates an LOH bam for a given region of interest on a chromosome
+#' @param chrom Name of the chromosome to be simulated (chrom number without 'chr' e.g. 1,2,...,22)
+#' @param loh_haplotype The haplotype onto which LOH should be simulated (string, either 'maternal' or 'paternal')
+#' @param loh_region The region number to be simulated among the loh_simulate regions (integer)
+#' @param loh_simulate A dataframe with two columns containing startpos and endpos of each loh region
+#' @param art_bin Full path to the ART bin tool for Illumina read simulation
+#' @param haploid_cov Sequencing coverage depth to be simulated per chromosome copy (numeric)
+#' @param read_length Length of the Illumina reads to be simulated (integer, usually 150)
+#' @param fragment_size Mean size of the sequencing library fragments to be simulated (integer)
+#' @param fragment_size_sd Standard deviation of the size of the sequencing library fragments to be simulated (integer)
+#' @param tmp_dir Name of the temporary directory for samtools run (character string, e.g. "TMP")
+#' @param bwa Full path to the BWA tool for read alignment
+#' @param refseq Full path to the fasta reference file to be used by BWA 
+#' @param bam Name of the BAM file to be generated (string)
+#' @param ncores Number of cores to be used in running BWA and samtools
+#' @param samtools Full path to the samtools bin
+#' @param logfile Name of the logfile for the BWA run (string)
+#' @param skip_art set to TRUE if ART run is already complete - files are expected in the working directory (default = FALSE)
+#' @param skip_bwa set to TRUE if BWA run is already complete - files are expected in the working directory (default = FALSE)
+#' @author naser.ansari-pour
+#' @export
 
 simulate_loh_region <- function(chrom,loh_haplotype,loh_region,loh_simulate,art_bin,haploid_cov,read_length,fragment_size,fragment_size_sd,tmp_dir,bwa,refseq,bam,ncores,samtools,logfile,skip_art=FALSE,skip_bwa=FALSE){
   
@@ -79,7 +122,30 @@ simulate_loh_region <- function(chrom,loh_haplotype,loh_region,loh_simulate,art_
   
 }
 
-# Simulate GAIN region
+
+#' Function to simulate GAIN region BAM
+#' 
+#' This function simulates a GAIN bam for a given region of interest on a chromosome
+#' @param chrom Name of the chromosome to be simulated (chrom number without 'chr' e.g. 1,2,...,22)
+#' @param gain_haplotype The haplotype onto which GAIN should be simulated (string, either 'maternal' or 'paternal')
+#' @param gain_region The region number to be simulated among the gain_simulate regions (integer)
+#' @param gain_simulate A dataframe with two columns containing startpos and endpos of each gain region
+#' @param art_bin Full path to the ART bin tool for Illumina read simulation
+#' @param haploid_cov Sequencing coverage depth to be simulated per chromosome copy (numeric)
+#' @param read_length Length of the Illumina reads to be simulated (integer, usually 150)
+#' @param fragment_size Mean size of the sequencing library fragments to be simulated (integer)
+#' @param fragment_size_sd Standard deviation of the size of the sequencing library fragments to be simulated (integer)
+#' @param tmp_dir Name of the temporary directory for samtools run (character string, e.g. "TMP")
+#' @param bwa Full path to the BWA tool for read alignment
+#' @param refseq Full path to the fasta reference file to be used by BWA 
+#' @param bam Name of the BAM file to be generated (string)
+#' @param ncores Number of cores to be used in running BWA and samtools
+#' @param samtools Full path to the samtools bin
+#' @param logfile Name of the logfile for the BWA run (string)
+#' @param skip_art set to TRUE if ART run is already complete - files are expected in the working directory (default = FALSE)
+#' @param skip_bwa set to TRUE if BWA run is already complete - files are expected in the working directory (default = FALSE)
+#' @author naser.ansari-pour
+#' @export
 
 simulate_gain_region <- function(chrom,gain_haplotype,gain_region,gain_simulate,art_bin,haploid_cov,read_length,fragment_size,fragment_size_sd,tmp_dir,bwa,refseq,bam,ncores,samtools,logfile,skip_art=FALSE,skip_bwa=FALSE){
   
