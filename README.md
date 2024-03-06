@@ -52,7 +52,7 @@ However, it requires the following external tools for its functionality:
 
 ### Pipeline
 
-The package includes Bash scripts which submit and run PlatformeR for simulating data and running jobs on both SLURM and SGE systems. The Bash (and respective R) scripts are located in the `inst/scripts` directory.
+The package includes Bash scripts which submit and run PlatformeR for simulating data and running jobs on both SLURM and SGE systems. The Bash (and respective R) script *templates* are located in the `inst/scripts` directory and must be updated based on the specific needs of the user.
 
 #### SLURM system
 
