@@ -1,5 +1,10 @@
 # PlatformeR genome-wide/WGS merge bam run
 
+# add full Library path of PlatformeR installation to .libPaths()
+.libPaths("/full/path/to/R/Library/where/PlatformeR/is/installed")
+
+library(PlatformeR)
+
 Args=commandArgs(trailingOnly = TRUE)
 chrom_names = as.integer(unlist(strsplit(toString(Args[1]), split = " ")))
 print(chrom_names)
