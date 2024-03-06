@@ -129,8 +129,6 @@ run_chrom_cna <- function(cna_simulate,chrom,fasta_dir,phase_dir,art_bin,haploid
         
         mix_bams_loh(simulated_purity = simulated_purity,
                      cna_ccf = loh_ccf,
-                     chrom_length = chr_length,
-                     cna_length = loh_simulate$endpos[loh_region]-loh_simulate$startpos[loh_region],
                      downsampling_seed = down_seed,
                      samtools = samtools,
                      clone0 = paste0("chr",chrom,".LOH.clone_region",loh_region),
@@ -215,8 +213,6 @@ run_chrom_cna <- function(cna_simulate,chrom,fasta_dir,phase_dir,art_bin,haploid
         
         mix_bams_gain(simulated_purity = simulated_purity,
                       cna_ccf = gain_ccf,
-                      chrom_length = chr_length,
-                      cna_length = gain_simulate$endpos[gain_region]-gain_simulate$startpos[gain_region],
                       downsampling_seed = down_seed,
                       samtools = samtools,
                       clone0 = paste0("chr",chrom,".GAIN.clone_region",gain_region),
