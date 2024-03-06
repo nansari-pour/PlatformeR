@@ -115,7 +115,7 @@ The output files will be organized in the working directory.
 
 #### Q: Why is the tool called "PlatformeR"?
 
-A: I have always been a big fan of platformer games and the the more I analysed genome-wide copy number plots, it looked more like the landscape of a platformer game, with the copy number aberrations resembling a platformed terrain. Hence, the name "PlatformeR" was chosen as a playful homage to platformer games.
+A: I have always been a big fan of platformer games and the more I analysed genome-wide copy number plots, they looked more like the landscape of a platformer game, with the copy number aberrations resembling a platformed terrain. Hence, the name "PlatformeR" was chosen as a playful homage to platformer games.
 
 #### Q: How can I contribute to PlatformeR development?
 
