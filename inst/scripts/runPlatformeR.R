@@ -1,5 +1,10 @@
 # PlatformeR wrapper run
 
+# add full Library path of PlatformeR installation to .libPaths()
+.libPaths("/full/path/to/R/Library/where/PlatformeR/is/installed")
+
+library(PlatformeR)
+
 Args=commandArgs(trailingOnly = TRUE)
 cna_simulate_file = toString(Args[1])
 chrom = as.integer(toString(Args[2]))
