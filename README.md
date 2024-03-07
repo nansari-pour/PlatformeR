@@ -91,7 +91,7 @@ Replace YOUR_SYSTEM_QUEUE_NAME with the appropriate SGE queue.
 ### Input:
 
 1. **Input Tab-Delimited Text File:**
-   - Include a tab-delimited text file specifying the parameters for the simulation of CNAs which includes five columns (with no headers) including 'chr', 'startpos', 'endpos', 'cna' (LOH or GAIN) and 'CCF' (0,1]. An example copy of this file is available in  `inst/extdata`.
+   - Include a tab-delimited text file specifying the parameters for the simulation of CNAs which includes five columns (with no headers) including 'chr', 'startpos', 'endpos', 'cna' (LOH or GAIN) and 'CCF' (0,1]. An example copy of this file is available in  `inst/extdata`. This file is unique to each simulation run.
 
 Ensure that the input files are correctly formatted and that the necessary reference genome files are provided for accurate simulation.
 
