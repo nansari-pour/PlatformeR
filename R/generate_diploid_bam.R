@@ -24,7 +24,7 @@
 
 generate_diploid_bam <- function(chrom,fasta_dir,phase_dir,art_bin,haploid_coverage,read_length,fragment_size,fragment_size_sd,tmp_dir,bwa,refseq,bam,ncores,samtools,logfile,skip_art=FALSE,skip_bwa=FALSE){
   
-  print(paste0("Initiating simulation of chromosome",chrom," - diploid"))
+  print(paste0("Initiating simulation of chromosome ",chrom," - diploid"))
   
   prepare_chrom_fasta(chrom=chrom,
                       fasta_dir = fasta_dir,
