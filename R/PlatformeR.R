@@ -1,3 +1,9 @@
+#' PlatformeR main function for generating per chromosome BAMs (with CNA or diploid)
+#'
+#' The function creates a BAM for a chromosome with >=1 CNA simulated in it
+#' and creates a diploid germline normal for the same chromosome if required (i.e.paired analysis)
+#' @param cna_simulate_file Full path to the file with CNA simulations which is a table with five columns (chr, startpos, endpos, cna, CCF) with no headers
+#' @param chrom Name of the chromosome to be simulated
 #' @param out_dir Full path to the out directory where genomewide files will be written
 #' @param fasta_dir Full path to the chromosome fasta directory
 #' @param phase_dir Full path to the phase reference file directory
