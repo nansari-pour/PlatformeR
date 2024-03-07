@@ -109,13 +109,13 @@ Ensure that the input files are correctly formatted and that the necessary refer
 4. **Intermediary Files: For Advanced Users**
    - The working directory will contain intermediary files necessary for the simulation process. These include chromosome-level BAM files, stored in subdirectories named after chromosome identifiers (e.g., `chr1`, `chr2`, etc.). These intermediary files aid in the construction of the final BAM files and provide insights into the simulated data at various stages of the process.
 
-The output files will be organized in the working directory.
+The output files will be organized in the out directory (out_dir in the BASH scripts; working directory).
 
 ## FAQ
 
 #### Q: Why is the tool called "PlatformeR"?
 
-A: I have always been a big fan of platformer games and the more I analysed genome-wide copy number plots, they looked more like the landscape of a platformer game, with the copy number aberrations resembling a platformed terrain. Hence, the name "PlatformeR" was chosen as a playful homage to platformer games.
+A: I have always been a big fan of platformer games and the more I analysed genome-wide copy number plots, the more they looked like the landscape of a platformer game, with the copy number aberrations resembling a platformed terrain. Hence, the name "PlatformeR" was chosen as a playful homage to platformer games.
 
 #### Q: How can I contribute to PlatformeR development?
 
