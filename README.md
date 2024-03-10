@@ -61,7 +61,7 @@ To submit a job on a SLURM system, use the following command:
 ```bash
 PlatformeR_submit=$(sbatch --partition=short --ntasks=8 --mem=40G --time=0-06:00:00 -a 1-22 ./runPlatformeR.sh | awk '{print $4}')
 # Submit the genome-wide merging script with a dependency on the PlatformeR job
-sbatch --partition=YOUR_SYSTEM_PARTITION_NAME --ntasks=24 --mem=40G --time=0-12:00:00 --dependency=afterok:${PlatformeR_submit} ./WGS_bam_generator.sh
+sbatch --partition=YOUR_SYSTEM_PARTITION_NAME --ntasks=8 --mem=20G --time=0-12:00:00 --dependency=afterok:${PlatformeR_submit} ./WGS_bam_generator.sh
 ```
 Replace YOUR_SYSTEM_PARTITION_NAME with the appropriate SLURM partition.
 
@@ -72,7 +72,7 @@ To submit a job on an SGE system, use the following command (**not tested**):
 ```bash
 PlatformeR_submit=$(qsub -q YOUR_SYSTEM_QUEUE_NAME -pe shmem 8 -l h_rt=6:00:00,h_vmem=40G -t 1-22 ./runPlatformeR.sh | awk '{print $3}')
 # Submit the genome-wide merging script with a dependency on the PlatformeR job
-qsub -pe shmem 24 -l h_rt=12:00:00,h_vmem=40G -hold_jid ${PlatformeR_submit} ./WGS_bam_generator.sh
+qsub -pe shmem 8 -l h_rt=12:00:00,h_vmem=20G -hold_jid ${PlatformeR_submit} ./WGS_bam_generator.sh
 ```
 Replace YOUR_SYSTEM_QUEUE_NAME with the appropriate SGE queue.
 
