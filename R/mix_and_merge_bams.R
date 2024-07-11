@@ -56,6 +56,35 @@ mix_bams_gain <- function(simulated_purity,cna_ccf,downsampling_seed,samtools,cl
   system(paste(samtools,"index",paste0(clone01,".bam")))
 }
 
+#' Function for mixing BAMs for chromosome X CNA events
+#' 
+#' @param simulated_purity Full path to chromosome X fasta directory
+#' @param cna_ccf The tumour purity to be simulated (numeric, ranging (0,1])
+#' @param downsampling_seed The seed value to be used for downsampling with samtools
+#' @param samtools Full path to the samtools bin
+#' @param clone0 Name of the clone with the simulated CNA
+#' @param clone1 Name of the clone with normal copy number
+#' @param clone01 Name of the mixed clone to be used for the output BAM
+#' @author naser.ansari-pour
+#' @export
+
+mix_bams_chrX <- function(simulated_purity,cna_ccf,downsampling_seed,samtools,clone0,clone1,clone01){
+  print(paste("CNA CCF =",cna_ccf))
+  print(paste("NORMAL CCF =",1-cna_ccf))
+  cna_proportion=round(simulated_purity*cna_ccf,digits = 2)
+  cna_prop_input=paste0(downsampling_seed,".",ifelse(cna_proportion>=0.1,cna_proportion*100,gsub("0\\.","",as.character(cna_proportion))))
+  print(cna_prop_input)
+  non_cna_prop_input=paste0(downsampling_seed,".",ifelse(cna_proportion>=0.1,(1-cna_proportion)*100,gsub("0\\.","",as.character(1-cna_proportion))))
+  print(non_cna_prop_input)
+  # merge bams with cna_prop and non_cna_prop
+  system(paste(samtools,"view -bs",cna_prop_input,paste0(clone0,".bam >") ,paste0(clone0,"_down.bam")))
+  system(paste(samtools,"view -bs",non_cna_prop_input,paste0(clone1,".bam >") ,paste0(clone1,"_down.bam")))
+  system(paste(samtools,"merge -h",paste0(clone0,"_down.bam"),"-c -p -f",paste0(clone01,".bam"),paste0(clone0,"_down.bam"),paste0(clone1,"_down.bam")))
+  system(paste(samtools,"sort",paste0(clone01,".bam -o"),paste0(clone01,"_sorted.bam")))
+  system(paste("mv",paste0(clone01,"_sorted.bam"),paste0(clone01,".bam")))
+  system(paste(samtools,"index",paste0(clone01,".bam")))
+}
+
 #' Function for merging BAM segments/regions to form a full chromosome
 #' 
 #' This functions merges the pieces/segments of the chromosome based on the bam list file
