@@ -37,6 +37,10 @@ else
   exit 1
 fi
 
+if [[ $chrom == 23 ]]; then
+  chrom="X"
+fi
+
 # echo chromosome
 echo "PlatformeR execution for Chromosome $chrom"
 
