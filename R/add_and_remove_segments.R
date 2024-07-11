@@ -1,10 +1,10 @@
 #' Function for removing a segment from the chromosome fasta sequence 
 #'
-#' Non-piecewise (legacy) function to remove segments due to LOH from a chromosome based on start and end positions (using alternate_segments)
+#' Non-piecewise function to remove segments due to LOH from a chromosome based on start and end positions (using alternate_segments)
 #' @param chromosome_string Chromosome fasta sequence string (one contiguous string)
 #' @param loh_segments A two column dataframe with headers startpos and endpos providing regions to be simulated for LOH
 #' @author naser.ansari-pour
-#' @keywords internal
+#' @export
 
 
 remove_segments <- function(chromosome_string, loh_segments) {
@@ -33,11 +33,11 @@ remove_segments <- function(chromosome_string, loh_segments) {
 
 #' Function for adding a segment from the chromosome fasta sequence 
 #'
-#' Non-piecewise (legacy) function to add segment due to GAIN at the end of a chromosome fasta sequence based on start and end positions (using alternate_segments)
+#' Non-piecewise function to add segment due to GAIN at the end of a chromosome fasta sequence based on start and end positions (using alternate_segments)
 #' @param chromosome_string Chromosome fasta sequence string (one contiguous string)
 #' @param gain_segments A two column dataframe with headers startpos and endpos providing regions to be simulated for GAIN
 #' @author naser.ansari-pour
-#' @keywords internal
+#' @export
 
 add_segments <- function(chromosome_string, gain_segments) {
   
@@ -53,7 +53,7 @@ add_segments <- function(chromosome_string, gain_segments) {
   # add gain segments to chromosome string
   post_gain_string=chromosome_string
   for (i in 1:nrow(gain_segments)){
-    post_gain_string=paste0(post_gain_string,substr(chromosome_string,gain_segments$startpos[i],gain_segments$endpos[i]),collapse = "")
+    post_gain_string=paste0(post_gain_string,paste0(rep(substr(chromosome_string,gain_segments$startpos[i],gain_segments$endpos[i]),gain_segments$TCN[i]-1),collapse = ""),collapse = "")
   }
   return(post_gain_string)
 }
