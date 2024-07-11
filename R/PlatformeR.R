@@ -10,17 +10,18 @@
 #' @param art_bin Full path to the ART bin tool for Illumina read simulation
 #' @param bwa Full path to the BWA tool for read alignment
 #' @param samtools Full path to the samtools bin
-#' @param tmp_dir Name of the temporary directory for samtools run (character string, e.g. "TMP")
-#' @param ncores Number of cores to be used in running BWA and samtools
-#' @param coverage Sequencing coverage depth to be simulated per chromosome copy for the tumour (numeric)
 #' @param read_length Length of the Illumina reads to be simulated (integer, usually 150)
 #' @param fragment_size Mean size of the sequencing library fragments to be simulated (integer)
 #' @param fragment_size_sd Standard deviation of the size of the sequencing library fragments to be simulated (integer)
+#' @param tmp_dir Name of the temporary directory for samtools run (character string, e.g. "TMP")
+#' @param ncores Number of cores to be used in running BWA and samtools
+#' @param coverage Sequencing coverage depth to be simulated per chromosome copy for the tumour (numeric)
+#' @param normal_coverage Sequencing coverage depth to be simulated per chromosome copy for the diploid germline/control sample (numeric)
 #' @param simulated_purity The tumour purity to be simulated (numeric, ranging (0,1])
+#' @param chromX_haplotype The haplotype onto which CNA should be simulated for chromosome X (string, default 'paternal')
 #' @param loh_haplotype The haplotype onto which LOH should be simulated (string, either 'maternal' or 'paternal')
 #' @param gain_haplotype The haplotype onto which GAIN should be simulated (string, either 'maternal' or 'paternal')
 #' @param generate_normal set to FALSE if a normal germline diploid BAM for the same chromosome is not required e.g. for tumour-only simulations (default=TRUE)
-#' @param normal_coverage Sequencing coverage depth to be simulated per chromosome copy for the diploid germline/control sample (numeric)
 #' @param generate_diploid_normal set to FALSE if a normal germline diploid BAM is not required for a non-CNA chromosome in the tumour e.g. for tumour-only simulations (default=TRUE)
 #' @author naser.ansari-pour
 #' @export
@@ -44,6 +45,26 @@ PlatformeR <- function(cna_simulate_file,chrom,out_dir,fasta_dir,phase_dir,art_b
 
     # run CNA simulation per chromosome
 
+    if (chrom=="X"){
+      
+      run_chromX_cna(cna_simulate = cna_simulate,
+                     fasta_dir = fasta_dir,
+                     phase_dir = phase_dir,
+                     art_bin = ART,
+                     haploid_coverage = coverage/2,
+                     read_length = read_length,
+                     fragment_size = fragment_size,
+                     fragment_size_sd = fragment_size_sd,
+                     tmp_dir=tmp_dir,
+                     bwa = BWA,
+                     ncores = ncores,
+                     samtools = SAM,
+                     cna_haplotype = chromX_haplotype,
+                     generate_normal = generate_normal,
+                     haploid_coverage_normal = normal_coverage/2,
+                     simulated_purity = simulated_purity)
+    } else {
+
     run_chrom_cna(cna_simulate = cna_simulate,
                   chrom = chrom,
                   fasta_dir = fasta_dir,
@@ -61,9 +82,11 @@ PlatformeR <- function(cna_simulate_file,chrom,out_dir,fasta_dir,phase_dir,art_b
                   gain_haplotype = gain_haplotype,
                   simulated_purity = simulated_purity,
                   generate_normal = generate_normal,
-                  haploid_coverage_normal = normal_coverage/2)
+                  haploid_coverage_normal = normal_coverage/2,
+                  simulated_purity = simulated_purity)
 
-  } else {
+  } 
+    } else {
 
     print(paste("Starting Chromosome ",chrom,"- no CNA"))
     chrom_dir=paste0(out_dir,"chr",chrom,"/")
