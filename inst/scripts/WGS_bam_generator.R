@@ -33,9 +33,9 @@ genomewide_merge_bam_list(chrom_names = chrom_names,
                           is.normal = FALSE)
 
 merge_mini_bams(samtools = samtools,
-                mini_bams_list_file = paste0(out_dir,samplename,"_genomewide_bam_list.txt"),
+                mini_bams_list_file = paste0(out_dir,tumourname,"_genomewide_bam_list.txt"),
                 ncores = ncores,
-                clone_bam_filename = ifelse(simulated_purity==1,paste0(samplename,".bam"),paste0(samplename,"_purity_",simulated_purity,".bam")))
+                clone_bam_filename = ifelse(simulated_purity==1,paste0(tumourname,".bam"),paste0(tumourname,"_purity_",simulated_purity,".bam")))
 
 if (merge_normal){
   
