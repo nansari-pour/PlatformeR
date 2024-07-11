@@ -42,6 +42,7 @@ PlatformeR(cna_simulate_file = cna_simulate_file,
            loh_haplotype = loh_haplotype,
            gain_haplotype = gain_haplotype,
            simulated_purity = simulated_purity,
+           chromX_haplotype = "paternal",
            generate_normal = TRUE,
            normal_coverage = normal_coverage,
            generate_diploid_normal = TRUE)
