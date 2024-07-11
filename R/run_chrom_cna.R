@@ -1,8 +1,8 @@
-#' run BAM generation per chromosome with simulated CNA
+#' run BAM generation per autosomal chromosome with simulated CNA
 #'
 #' The function creates a BAM for a given chromosome with >=1 CNA simulated in it 
 #' and creates a diploid germline normal for the same chromosome if required (i.e.paired analysis)
-#' @param cna_simulate A dataframe with five columns (chr, startpos, endpos, cna, CCF) containing the desired CNA to be simulated
+#' @param cna_simulate A dataframe with five columns (chr, startpos, endpos, cna, CCF and total copy number (TCN)) containing the desired CNA to be simulated
 #' @param chrom Name of the chromosome to be simulated 
 #' @param fasta_dir Full path to the chromosome fasta directory
 #' @param phase_dir Full path to the phase reference file directory
@@ -17,13 +17,13 @@
 #' @param samtools Full path to the samtools bin
 #' @param loh_haplotype The haplotype onto which LOH should be simulated (string, either 'maternal' or 'paternal')
 #' @param gain_haplotype The haplotype onto which GAIN should be simulated (string, either 'maternal' or 'paternal')
-#' @param simulated_purity The tumour purity to be simulated (numeric, ranging (0,1])
 #' @param generate_normal set to FALSE if a normal germline diploid BAM for the same chromosome is not required e.g. for tumour-only simulations (default=TRUE)
 #' @param haploid_coverage_normal Sequencing coverage depth to be simulated per chromosome copy for the germline diploid BAM (numeric)
+#' @param simulated_purity The tumour purity to be simulated (numeric, ranging (0,1])
 #' @author naser.ansari-pour
 #' @export
 
-run_chrom_cna <- function(cna_simulate,chrom,fasta_dir,phase_dir,art_bin,haploid_coverage,read_length,fragment_size,fragment_size_sd,tmp_dir,bwa,ncores,samtools,loh_haplotype,gain_haplotype,simulated_purity,generate_normal=TRUE,haploid_coverage_normal){
+run_chrom_cna <- function(cna_simulate,chrom,fasta_dir,phase_dir,art_bin,haploid_coverage,read_length,fragment_size,fragment_size_sd,tmp_dir,bwa,ncores,samtools,loh_haplotype,gain_haplotype,generate_normal=TRUE,haploid_coverage_normal,simulated_purity){
   
   chrom_simulate=cna_simulate[cna_simulate$chr==chrom,]
   chrom_simulate$length=chrom_simulate$endpos-chrom_simulate$startpos
@@ -261,3 +261,181 @@ run_chrom_cna <- function(cna_simulate,chrom,fasta_dir,phase_dir,art_bin,haploid
                         skip_bwa = FALSE)
   }
 }
+
+#' run BAM generation for chromosome X with simulated CNA
+#'
+#' The function creates a BAM for chromosome X with >=1 CNA simulated in it 
+#' and creates a germline normal for the same chromosome if required (i.e.paired analysis)
+#' @param cna_simulate A dataframe with five columns (chr, startpos, endpos, cna, CCF and total copy number (TCN)) containing the desired CNA to be simulated
+#' @param fasta_dir Full path to the chromosome fasta directory
+#' @param phase_dir Full path to the phase reference file directory
+#' @param art_bin Full path to the ART bin tool for Illumina read simulation
+#' @param haploid_coverage Sequencing coverage depth to be simulated per chromosome copy (numeric)
+#' @param read_length Length of the Illumina reads to be simulated (integer, usually 150)
+#' @param fragment_size Mean size of the sequencing library fragments to be simulated (integer)
+#' @param fragment_size_sd Standard deviation of the size of the sequencing library fragments to be simulated (integer)
+#' @param tmp_dir Name of the temporary directory for samtools run (character string, e.g. "TMP")
+#' @param bwa Full path to the BWA tool for read alignment
+#' @param ncores Number of cores to be used in running BWA and samtools
+#' @param samtools Full path to the samtools bin
+#' @param cna_haplotype The haplotype onto which CNA should be simulated (string, default 'paternal')
+#' @param generate_normal set to FALSE if a normal germline BAM for chromosome X is not required e.g. for tumour-only simulations (default=TRUE)
+#' @param haploid_coverage_normal Sequencing coverage depth to be simulated per chromosome copy for the germline BAM (numeric)
+#' @param simulated_purity The tumour purity to be simulated (numeric, ranging (0,1])
+#' @author naser.ansari-pour
+#' @export
+
+run_chromX_cna <- function(cna_simulate, fasta_dir, phase_dir, art_bin, haploid_coverage, read_length, fragment_size, fragment_size_sd, tmp_dir, bwa, ncores, samtools, cna_haplotype, generate_normal=TRUE, haploid_coverage_normal, simulated_purity){
+  
+  chrom_simulate=cna_simulate[cna_simulate$chr=="X",]
+  chrom_simulate$length=chrom_simulate$endpos-chrom_simulate$startpos
+  print(chrom_simulate)
+  
+  # generate maternal and paternal chromosome fasta file
+  prepare_chrom_fasta(chrom="X",
+                      fasta_dir = fasta_dir,
+                      phase_dir = phase_dir)
+  
+  normal_chromX_fasta_filename=paste0("chrX.",cna_haplotype,".fa")
+  chromX_fasta=readLines(normal_chromX_fasta_filename)
+  chromX_fasta=paste(chromX_fasta[-1],collapse = "")
+  # chromX_fasta=substr(chromX_fasta,start = 68e6,stop = 72e6)
+  # nchar(chromX_fasta)
+  
+  loh_simulate=chrom_simulate[which(!is.na(match(chrom_simulate$cna,c("LOH","loh","Loh")))),]
+  
+  if (nrow(loh_simulate)>0){
+    chromX_fasta=remove_segments(chromosome_string = chromX_fasta,loh_segments = loh_simulate)
+  }
+  
+  gain_simulate=chrom_simulate[which(!is.na(match(chrom_simulate$cna,c("GAIN","Gain","gain")))),]
+  
+  if (nrow(gain_simulate)>0){
+    chromX_fasta=add_segments(chromosome_string = chromX_fasta,gain_segments = gain_simulate)
+  }
+  
+  chromX_fasta_filename="chrX.clone.fa"
+  cat(paste0(">chrX-",cna_haplotype),sep = "\n", file = chromX_fasta_filename, append = TRUE)
+  cat(chromX_fasta, sep = "\n", file = chromX_fasta_filename, append = TRUE)
+  
+  fasta2bam_simulate(clone_fasta_filename = chromX_fasta_filename,
+                     art_bin = art_bin,
+                     haploid_cov = haploid_coverage,
+                     read_length = read_length,
+                     fragment_size = fragment_size,
+                     fragment_size_sd = fragment_size_sd,
+                     tmp_dir = tmp_dir,
+                     fq1 = paste0(gsub(".fa","_",chromX_fasta_filename),"1.fq"),
+                     fq2 = paste0(gsub(".fa","_",chromX_fasta_filename),"2.fq"),
+                     bwa = bwa,
+                     refseq = paste0(fasta_dir,"chr",chrom,".fa"),
+                     bam = gsub(".fa",".bam",chromX_fasta_filename),
+                     ncores = ncores,
+                     samtools = samtools,
+                     logfile = paste0("BWA_chrX.log"),
+                     skip_art = FALSE,
+                     skip_bwa = FALSE)
+  
+  # if CCF of any CNA is <1 or simulated_purity is <1, do piecewise simulation
+  if (min(chrom_simulate$CCF)<1 | simulated_purity<1){
+    
+    haploid_regions=alternate_segments(nchar(chromX_fasta),chrom_simulate[,c("startpos","endpos")])
+    print(haploid_regions)
+    
+    for (haploid_region in 1:nrow(haploid_regions)){
+      
+      system(paste(samtools,"view -b", gsub(".fa",".bam",chromX_fasta_filename),paste0("chrX:",haploid_regions$startpos[haploid_region],"-",haploid_regions$endpos[haploid_region]),paste0(" > chrX.haploid_region",haploid_region,".bam")))
+      print(paste0("haploid_region",haploid_region,".bam"))
+    }
+    
+    seeds=1:100
+    
+    for (cna_region in 1:nrow(chrom_simulate)){
+    
+      cna_ccf=chrom_simulate$CCF[cna_region]
+        
+    if (simulated_purity*cna_ccf<1){  
+    
+    system(paste(samtools,"view -b", gsub(".fa",".bam",chromX_fasta_filename),paste0("chrX:",chrom_simulate$startpos[cna_region],"-",chrom_simulate$endpos[cna_region]),paste0(" > cna_region",cna_region,".bam")))
+    print(paste0("cna_region",cna_region,".bam"))  
+    
+    normal_cna_region_fasta=readLines(normal_chromX_fasta_filename)
+    normal_cna_region_fasta=paste(normal_cna_region_fasta[-1],collapse = "")
+    cna_region_normal_fasta_filename=paste0("cna_region",cna_region,"_normal.fa")
+    cat(paste0(">chrX-cna_region",cna_region),sep = "\n", file = cna_region_normal_fasta_filename, append = TRUE)
+    cat(substr(normal_cna_region_fasta,start = chrom_simulate$startpos[cna_region],stop = chrom_simulate$endpos[cna_region]), sep = "\n", file = cna_region_normal_fasta_filename, append = TRUE)
+    
+      # create normal bam for the cna region
+    fasta2bam_simulate(clone_fasta_filename = cna_region_normal_fasta_filename,
+                       art_bin = art_bin,
+                       haploid_cov = haploid_coverage,
+                       read_length = read_length,
+                       fragment_size = fragment_size,
+                       fragment_size_sd = fragment_size_sd,
+                       tmp_dir = tmp_dir,
+                       fq1 = paste0(gsub(".fa","_",cna_region_normal_fasta_filename),"1.fq"),
+                       fq2 = paste0(gsub(".fa","_",cna_region_normal_fasta_filename),"2.fq"),
+                       bwa = bwa,
+                       refseq = paste0(fasta_dir,"chr",chrom,".fa"),
+                       bam = gsub(".fa",".bam",cna_region_normal_fasta_filename),
+                       ncores = ncores,
+                       samtools = samtools,
+                       logfile = paste0("BWA_chrX_normal.log"),
+                       skip_art = FALSE,
+                       skip_bwa = FALSE)
+      
+      
+      down_seed=sample(seeds,1,replace = FALSE)
+      
+      mix_bams_chrX(simulated_purity = simulated_purity,
+                    cna_ccf = cna_ccf,
+                    downsampling_seed = down_seed,
+                    samtools = samtools,
+                    clone0 = paste0("cna_region",cna_region),
+                    clone1 = paste0("cna_region",cna_region,"_normal"),
+                    clone01 = paste0("chrX.cna_region",cna_region)
+                    )
+      
+      
+      } else {
+        
+        system(paste(samtools,"view -b", gsub(".fa",".bam",chromX_fasta_filename),paste0("chrX:",chrom_simulate$startpos[cna_region],"-",chrom_simulate$endpos[cna_region]),paste0(" > chrX.cna_region",cna_region,".bam")))
+        print(paste0("cna_region",cna_region,".bam"))
+        
+      }
+      
+      # merge the haploid regions with the cna regions (whether mixed due to purity<1 and/or CCF<1 OR keep it intact)
+      # merge final BAMs of all segments to generate a full chromosome containing CNAs in chrom_simulate
+      
+      system(paste("ls", paste0("chrX.haploid_region*bam >"),paste0("chrX_mini_bams_list.txt")))
+      system(paste("ls", paste0("chr",chrom,".cna_region*bam >>"),paste0("chrX_mini_bams_list.txt")))
+      
+      merge_mini_bams(samtools = samtools,
+                      mini_bams_list_file = paste0("chrX_mini_bams_list.txt"),
+                      ncores = ncores,
+                      clone_bam_filename = ifelse(simulated_purity==1,paste0("chrX.clone.bam"),paste0("chrX.clone_purity_",simulated_purity,".bam")))
+    }
+  }
+  
+  if (generate_normal){
+    
+    fasta2bam_simulate(clone_fasta_filename = normal_chromX_fasta_filename,
+                       art_bin = art_bin,
+                       haploid_cov = haploid_coverage_normal,
+                       read_length = read_length,
+                       fragment_size = fragment_size,
+                       fragment_size_sd = fragment_size_sd,
+                       tmp_dir = tmp_dir,
+                       fq1 = paste0(gsub(".fa","_",normal_chromX_fasta_filename),"1.fq"),
+                       fq2 = paste0(gsub(".fa","_",normal_chromX_fasta_filename),"2.fq"),
+                       bwa = bwa,
+                       refseq = paste0(fasta_dir,"chr",chrom,".fa"),
+                       bam = "chrX.normal.bam",
+                       ncores = ncores,
+                       samtools = samtools,
+                       logfile = paste0("BWA_chrX_germline.log"),
+                       skip_art = FALSE,
+                       skip_bwa = FALSE)
+
+  }
+    }
