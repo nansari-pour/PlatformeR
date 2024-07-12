@@ -6,7 +6,7 @@
 library(PlatformeR)
 
 Args=commandArgs(trailingOnly = TRUE)
-chrom_names = as.integer(unlist(strsplit(toString(Args[1]), split = " ")))
+chrom_names = unlist(strsplit(toString(Args[1]), split = " "))
 print(chrom_names)
 simulated_purity = as.numeric(toString(Args[2]))
 print(paste("Simulated purity =",simulated_purity))
