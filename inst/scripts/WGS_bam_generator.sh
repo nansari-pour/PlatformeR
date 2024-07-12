@@ -7,7 +7,7 @@ out_dir="/full/path/to/out/directory/"
 SAM='/package/samtools/1.17/bin/samtools'
 
 # Parameters
-chrom_names=$(seq 1 22)
+chrom_names=$(echo $(seq 1 22) X)
 echo $chrom_names
 simulated_purity=0.8
 ncores=8
