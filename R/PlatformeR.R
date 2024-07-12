@@ -80,7 +80,6 @@ PlatformeR <- function(cna_simulate_file,chrom,out_dir,fasta_dir,phase_dir,art_b
                   samtools = samtools,
                   loh_haplotype = loh_haplotype,
                   gain_haplotype = gain_haplotype,
-                  simulated_purity = simulated_purity,
                   generate_normal = generate_normal,
                   haploid_coverage_normal = normal_coverage/2,
                   simulated_purity = simulated_purity)
