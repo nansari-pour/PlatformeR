@@ -30,7 +30,7 @@
 PlatformeR <- function(cna_simulate_file,chrom,out_dir,fasta_dir,phase_dir,art_bin,bwa,samtools,read_length,fragment_size,fragment_size_sd,tmp_dir,ncores,coverage,normal_coverage,simulated_purity,chromX_haplotype="paternal",loh_haplotype,gain_haplotype,generate_normal=TRUE,generate_diploid_normal=TRUE){
   # Read in CNA simulation input for chromosomes
   cna_simulate=read.table(cna_simulate_file, header = F, stringsAsFactors = F)
-  names(cna_simulate)=c("chr","startpos","endpos","cna","CCF")
+  names(cna_simulate)=c("chr","startpos","endpos","cna","CCF","TCN")
   print(cna_simulate)
   # Standardise Chr notation
   cna_simulate$chr=gsub("chr","",cna_simulate$chr)
