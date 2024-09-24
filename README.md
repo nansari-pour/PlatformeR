@@ -122,6 +122,10 @@ A: I have always been a big fan of platformer games and the more I analysed geno
 A: Contributions to PlatformeR are welcome! If you have ideas for new features, bug fixes, or improvements, please raise an issue or submit a pull request detailing the changes you've made and why they should be merged.
 Your contributions will be reviewed, and feedback may be provided before merging. Thank you for helping improve PlatformeR!
 
+#### Q: How can I simulate MSAI using PlatformeR?
+
+A: To simulate mirrored subclonal allelic imbalance (MSAI), you can use the MSAI scripts (runPlatformeR_MSAI.sh and WGS_bam_generator_MSAI.sh) available at `inst/scripts`. The same steps should be taken as described in the [Pipeline](#pipeline) section, however, by definition, the simulation of MSAI should be limited to autosomal chromosomes (as set in WGS_bam_generator_MSAI.sh) where paternal/maternal haplotype information is available at `reference_files`.
+
 ## License
 
 ```
