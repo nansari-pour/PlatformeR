@@ -97,7 +97,7 @@ PlatformeR <- function(cna_simulate_file,chrom,out_dir,fasta_dir,phase_dir,art_b
                          fasta_dir = fasta_dir,
                          phase_dir = phase_dir,
                          art_bin = art_bin,
-                         haploid_cov = coverage/2,
+                         haploid_cov = ifelse(chrom=="X",coverage/4,coverage/2)
                          read_length = read_length,
                          fragment_size = fragment_size,
                          fragment_size_sd = fragment_size_sd,
@@ -115,7 +115,7 @@ PlatformeR <- function(cna_simulate_file,chrom,out_dir,fasta_dir,phase_dir,art_b
                            fasta_dir = fasta_dir,
                            phase_dir = phase_dir,
                            art_bin = art_bin,
-                           haploid_cov = normal_coverage/2,
+                           haploid_cov = ifelse(chrom=="X",normal_coverage/4,normal_coverage/2)
                            read_length = read_length,
                            fragment_size = fragment_size,
                            fragment_size_sd = fragment_size_sd,
